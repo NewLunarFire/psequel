@@ -6,6 +6,8 @@ This is still a very early demo and is not properly secured against threats like
 
 PSequel aims to become a framework that will make bridging nodejs code and postgreSQL queries easier. It will do so by avoiding direct use of SQL queries to fetch and update data and offer methods that will use objects and do run-time validation on data to ensure quality.
 
+[![Build Status](https://travis-ci.org/NewLunarFire/psequel.svg?branch=master)](https://travis-ci.org/NewLunarFire/psequel)
+
 ## Typical use
 ```javascript
 var pg = require('pg')
