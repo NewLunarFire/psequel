@@ -41,7 +41,7 @@ function parseWhereClause(clause) {
             return error('Invalid where clause');
     }
 
-    return value('WHERE ' + clauseText);
+    return value(clauseText);
 }
 
 async function select(client, table, args) {
@@ -55,7 +55,7 @@ async function select(client, table, args) {
             whereClause = parseWhereClause(this.clauses.where);
         }
     }
-    const queryString = 'SELECT ' + columnSelector.value + ' FROM ' + table + ' ' + whereClause.value;
+    const queryString = 'SELECT ' + columnSelector.value + ' FROM ' + table + (whereClause.value ? ' WHERE ' + whereClause.value : '');
     const result = await client.query(queryString);
     return result.rows;
 }
