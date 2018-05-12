@@ -11,6 +11,13 @@ module.exports = function(client) {
                 columns[el] = new Column(el);
             });
             return {
+                col: function(name) {
+                    if(columns[name] === undefined)
+                        return new Error('This column does not exist');
+                    else
+                        return columns[name] 
+                },
+                
                 // Model
                 columns: columns,
 

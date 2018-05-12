@@ -20,6 +20,18 @@ const testModel = {
     'columns': ['id', 'name', 'value', "le'ls"]
 };
 
+describe('Model', () => {
+    describe('#col()', () => {
+        it('should return a column object if called with a valid column', async () => {
+            const testTable = psequel({}).Model(testModel);
+            expect(testTable.col('name')).to.be.an('object');
+        });
+        it('should return an error if called with an invalid column', async () => {
+            const testTable = psequel({}).Model(testModel);
+            expect(testTable.col('burp')).to.be.an('error');
+        });
+    });
+});
 describe('Queries', () => {
     describe('#select()', () => {
         it('should use star if no arguments provided', async () => {
@@ -54,9 +66,9 @@ describe('Queries', () => {
     describe('#where()', () => {
         it('should add where clause if provided with one', async () => {
             const fakeClient = createFakeClient();
-            const test = psequel(fakeClient).Model(testModel);
-            await test.where(
-                test.columns['name'].equalsValue('Jo')
+            const testTable = psequel(fakeClient).Model(testModel);
+            await testTable.where(
+                testTable.columns['name'].equalsValue('Jo')
             ).select();
 
             expect(fakeClient.query).to.have.been.calledOnce;
