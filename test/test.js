@@ -1,8 +1,9 @@
 "use strict";
+var path = require('path');
 var chai = require("chai");
 var sinon = require("sinon");
 var sinonChai = require("sinon-chai");
-var psequel = require('../index');
+var psequel = require(path.join(__dirname, '..', 'index'));
 var expect = chai.expect;
 
 chai.should();
@@ -21,39 +22,39 @@ const testModel = {
 
 describe('Queries', () => {
     describe('#select()', () => {
-        it('should use star if no arguments provided', () => {
+        it('should use star if no arguments provided', async () => {
             const fakeClient = createFakeClient();
-            psequel(fakeClient).Model(testModel).select();
+            await psequel(fakeClient).Model(testModel).select();
 
-            fakeClient.query.should.have.been.calledOnce;
-            fakeClient.query.should.have.been.calledWith("SELECT * FROM test");
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("SELECT * FROM test");
         });
-        it('should select one column if provided a string as argument', () => {
+        it('should select one column if provided a string as argument', async () => {
             const fakeClient = createFakeClient();
-            psequel(fakeClient).Model(testModel).select('id');
+            await psequel(fakeClient).Model(testModel).select('id');
 
-            fakeClient.query.should.have.been.calledOnce;
-            fakeClient.query.should.have.been.calledWith("SELECT id FROM test");
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("SELECT id FROM test");
         });
-        it('should select multiple column if provided an array as argument', () => {
+        it('should select multiple column if provided an array as argument', async () => {
             const fakeClient = createFakeClient();
-            psequel(fakeClient).Model(testModel).select(['id', 'name', 'value']);
+            await psequel(fakeClient).Model(testModel).select(['id', 'name', 'value']);
 
-            fakeClient.query.should.have.been.calledOnce;
-            fakeClient.query.should.have.been.calledWith("SELECT id, name, value FROM test");
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("SELECT id, name, value FROM test");
         });
     });
     describe('#where()', () => {
-        it('should add where clause if provided with one', () => {
+        it('should add where clause if provided with one', async () => {
             const fakeClient = createFakeClient();
-            psequel(fakeClient).Model(testModel).where({
+            await psequel(fakeClient).Model(testModel).where({
                 'column': 'name',
                 'op': 'eq' ,
                 'value': 'Jo'
             }).select();
 
-            fakeClient.query.should.have.been.calledOnce;
-            fakeClient.query.should.have.been.calledWith("SELECT * FROM test WHERE name = 'Jo'");
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("SELECT * FROM test WHERE name = 'Jo'");
         });
     });  
 });
