@@ -1,25 +1,38 @@
 const path = require('path');
 const helper = require(path.join(__dirname, '..', 'helper'));
 
-function getColumnSelector(args) {
-    // By default star
-    var result = '*';
-    
-    if(args.length == 0) {
-        result = '*';
-    } else if(args.length == 1) {
-        if(typeof(args[0]) === 'string')  {
-            result = args[0];
-        } else if(typeof(args[0]) === 'object')  {
-            if(Array.isArray(args[0])) {
-                result = args[0].join(', ');
-            }
-        }
-    } else {
-        return helper.error('Invalid column selector');
-    }
+const addQuotes = (str) => '\'' + str.replace('\'', '\'\'') + '\'';
 
-    return helper.value(result);
+function getColumnSelector(columns, model) {
+    if(columns.length === 0) {
+        // Star, nothing to validate
+        return '*';
+    }
+    
+    if(columns.length === 1) {
+        if(typeof(columns[0]) === 'string')  {
+            //Single column passed as string
+            
+            // Verify if part of schema
+            if(!model.columns.includes(columns[0]))
+                return new Error('Column not present in model');
+
+            // Return sole column, escape quotes if necessary
+            return addQuotes(columns[0]);
+        } else if(typeof(columns[0]) === 'object' && Array.isArray(columns[0]))  {
+            var res = columns[0].find((col) => typeof(col) !== 'string');
+            if(res !== undefined)
+                return Error('Invalid type, expected strings');
+            
+            var res = columns[0].find((col) => !model.columns.includes(col));
+            if(res !== undefined)
+                return Error('Column ' + addQuotes(res) + ' not present in model');
+
+            return columns[0].map(addQuotes).join(', ');
+        }
+    }
+        
+    return new Error('Invalid column selector');
 }
 
 function parseWhereClause(clause) {
@@ -33,19 +46,18 @@ function parseWhereClause(clause) {
                 clauseText += clause.value;
             break;
         default:
-            return helper.error('Invalid where clause');
+        return new Error('Invalid where clause');
     }
 
-    return helper.value(clauseText);
+    return clauseText;
 }
 
-module.exports = async function select(client, table, args) {
-    const columnSelector = await helper.toAsync(getColumnSelector(args));
+module.exports = async function select(client, model, columns) {
+    const columnSelector = await helper.toAsync(getColumnSelector(columns, model));
     const whereClause = this.clauses && this.clauses.where
         ? await helper.toAsync(parseWhereClause(this.clauses.where))
         : null;
-    const queryString = 'SELECT ' + columnSelector + ' FROM ' + table + (whereClause !== null ? ' WHERE ' + whereClause : '');
+    const queryString = 'SELECT ' + columnSelector + ' FROM ' + model.table + (whereClause !== null ? ' WHERE ' + whereClause : '');
     const result = await client.query(queryString);
-    console.log(result);
     return result.rows;
 }
