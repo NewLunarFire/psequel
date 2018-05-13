@@ -78,6 +78,42 @@ describe('Commands', () => {
             expect(fakeClient.query).not.to.have.been.called;
         });
     });
+    describe('#insert()', () => {
+        it('should put arguments in the same order as the columns', async () => {
+            const fakeClient = createFakeClient();
+            await psequel(fakeClient).Model(testModel).insert({
+                'name': 'Will',
+                'value': 'allo'
+            });
+
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith('INSERT INTO test("name", "value") VALUES(\'Will\', \'allo\') RETURNING *');
+        });
+        it('should not quote integer arguments', async () => {
+            const fakeClient = createFakeClient();
+            await psequel(fakeClient).Model(testModel).insert({
+                'value': 42
+            });
+
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith('INSERT INTO test("value") VALUES(42) RETURNING *');
+        });
+        it('should not allow choosing columns not present in schema', async () => {
+            const fakeClient = createFakeClient();
+            const testTable = psequel(fakeClient).Model(testModel);
+            const selectSpy = sinon.spy(testTable, "insert");
+
+            try {
+                await testTable.insert({
+                    'burp': 'error'
+                });
+            } catch(e) {
+            }
+
+            expect(selectSpy).to.have.thrown;
+            expect(fakeClient.query).not.to.have.been.called;
+        });
+    });
 });
 
 describe('Clauses', () => {

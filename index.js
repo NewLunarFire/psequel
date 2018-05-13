@@ -1,6 +1,12 @@
 const path = require('path');
-const where = require(path.join(__dirname, '/src/clauses/where'));
+
+//Commands
 const select = require(path.join(__dirname, '/src/commands/select'));
+const insert = require(path.join(__dirname, '/src/commands/insert'));
+// Clauses
+const where = require(path.join(__dirname, '/src/clauses/where'));
+
+
 const Column = require(path.join(__dirname, '/src/column'));
 
 module.exports = function(client) {
@@ -22,6 +28,10 @@ module.exports = function(client) {
                 columns: columns,
 
                 // Commands
+                insert: async function() {
+                    return await insert.bind(this)(client, model, arguments)
+                },
+
                 select: async function() {
                     return await select.bind(this)(client, model, arguments)
                 },
