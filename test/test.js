@@ -17,7 +17,7 @@ function createFakeClient() {
 
 const testModel = {
     'table': 'test',
-    'columns': ['id', 'name', 'value', "le'ls"]
+    'columns': ['id', 'name', 'value', 'le"ls']
 };
 
 describe('Model', () => {
@@ -32,7 +32,9 @@ describe('Model', () => {
         });
     });
 });
-describe('Queries', () => {
+
+
+describe('Commands', () => {
     describe('#select()', () => {
         it('should use star if no arguments provided', async () => {
             const fakeClient = createFakeClient();
@@ -46,23 +48,39 @@ describe('Queries', () => {
             await psequel(fakeClient).Model(testModel).select('id');
 
             expect(fakeClient.query).to.have.been.calledOnce;
-            expect(fakeClient.query).to.have.been.calledWith("SELECT 'id' FROM test");
+            expect(fakeClient.query).to.have.been.calledWith('SELECT "id" FROM test');
         });
         it('should select multiple column if provided an array as argument', async () => {
             const fakeClient = createFakeClient();
             await psequel(fakeClient).Model(testModel).select(['id', 'name', 'value']);
 
             expect(fakeClient.query).to.have.been.calledOnce;
-            expect(fakeClient.query).to.have.been.calledWith("SELECT 'id', 'name', 'value' FROM test");
+            expect(fakeClient.query).to.have.been.calledWith('SELECT "id", "name", "value" FROM test');
         });
-        it('should properly escape column names containing single quotes', async () => {
+        it('should properly escape column names containing double quotes', async () => {
             const fakeClient = createFakeClient();
-            await psequel(fakeClient).Model(testModel).select("le'ls");
+            await psequel(fakeClient).Model(testModel).select('le"ls');
 
             expect(fakeClient.query).to.have.been.calledOnce;
-            expect(fakeClient.query).to.have.been.calledWith("SELECT 'le''ls' FROM test");
+            expect(fakeClient.query).to.have.been.calledWith('SELECT "le""ls" FROM test');
+        });
+        it('should not allow selecting columns not present in schema', async () => {
+            const fakeClient = createFakeClient();
+            const testTable = psequel(fakeClient).Model(testModel);
+            const selectSpy = sinon.spy(testTable, "select");
+
+            try {
+                await testTable.select('error');
+            } catch(e) {
+            }
+
+            expect(selectSpy).to.have.thrown;
+            expect(fakeClient.query).not.to.have.been.called;
         });
     });
+});
+
+describe('Clauses', () => {
     describe('#where()', () => {
         it('should add where clause if provided with one', async () => {
             const fakeClient = createFakeClient();

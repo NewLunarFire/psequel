@@ -8,12 +8,12 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "mocha": "^5.1.1",
     "sinon": "^5.0.7",
-    "sinon-chai": "^3.0.0",
-    "mocha": "^5.1.1"
+    "sinon-chai": "^3.0.0"
   },
   "peerDependencies": {
-    "pg": "^7.4.0"
+    "pg": "^7.4.3"
   },
   "author": "Tommy Savaria",
   "license": "MIT"

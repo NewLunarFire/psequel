@@ -1,8 +1,6 @@
 const path = require('path');
 const helper = require(path.join(__dirname, '..', 'helper'));
 
-const addQuotes = (str) => '\'' + str.replace('\'', '\'\'') + '\'';
-
 function getColumnSelector(columns, model) {
     if(columns.length === 0) {
         // Star, nothing to validate
@@ -18,17 +16,17 @@ function getColumnSelector(columns, model) {
                 return new Error('Column not present in model');
 
             // Return sole column, escape quotes if necessary
-            return addQuotes(columns[0]);
+            return helper.addDoubleQuotes(columns[0]);
         } else if(typeof(columns[0]) === 'object' && Array.isArray(columns[0]))  {
             var res = columns[0].find((col) => typeof(col) !== 'string');
             if(res !== undefined)
                 return Error('Invalid type, expected strings');
             
-            var res = columns[0].find((col) => !model.columns.includes(col));
+            res = columns[0].find((col) => !model.columns.includes(col));
             if(res !== undefined)
-                return Error('Column ' + addQuotes(res) + ' not present in model');
+                return Error('Column ' + helper.addDoubleQuotes(res) + ' not present in model');
 
-            return columns[0].map(addQuotes).join(', ');
+            return columns[0].map(helper.addDoubleQuotes).join(', ');
         }
     }
         
@@ -52,7 +50,7 @@ function parseWhereClause(clause) {
     return clauseText;
 }
 
-module.exports = async function select(client, model, columns) {
+module.exports = async function (client, model, columns) {
     const columnSelector = await helper.toAsync(getColumnSelector(columns, model));
     const whereClause = this.clauses && this.clauses.where
         ? await helper.toAsync(parseWhereClause(this.clauses.where))
