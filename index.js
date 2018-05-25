@@ -37,6 +37,11 @@ module.exports = function(client) {
                     return await select.bind(this)(client, model, arguments)
                 },
 
+                selectOne: async function() {
+                    const res = await select.bind(this.limit(1))(client, model, arguments)
+                    return res.length === 0 ? null :res[0]
+                },
+
                 //Clauses
                 where,
                 limit,
