@@ -1,6 +1,6 @@
 {
   "name": "psequel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A model Postgres framework to enable easier sql-json interoperability",
   "main": "index.js",
   "scripts": {

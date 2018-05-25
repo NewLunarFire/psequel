@@ -113,6 +113,15 @@ describe('Commands', () => {
             expect(selectSpy).to.have.thrown;
             expect(fakeClient.query).not.to.have.been.called;
         });
+        it('should flatten arrays', async () => {
+            const fakeClient = createFakeClient();
+            await psequel(fakeClient).Model(testModel).insert({
+                'value': ['one', 'two', 'three']
+            });
+
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith('INSERT INTO test("value") VALUES(\'{one, two, three}\') RETURNING *');
+        });
     });
 });
 
