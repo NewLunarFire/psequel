@@ -39,9 +39,7 @@ const res = await users.select();
 
 // Run a more complex query, with a where clause
 const res = await users.where({
-        'column': 'name',
-        'op': 'eq' ,
-        'value': 'Jo'
+        users.columns['name'].equalsValue('Jo')
     }).select(
         ['age', 'salary']
     );
@@ -67,5 +65,7 @@ model.select('fieldName');
 
 //Select listed fields
 model.select(['field1', 'field2', ..., 'fieldN']);
+
+
 ```
 ## MORE TO COME...

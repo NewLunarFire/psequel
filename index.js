@@ -5,7 +5,7 @@ const select = require(path.join(__dirname, '/src/commands/select'));
 const insert = require(path.join(__dirname, '/src/commands/insert'));
 // Clauses
 const where = require(path.join(__dirname, '/src/clauses/where'));
-
+const limit = require(path.join(__dirname, '/src/clauses/limit'));
 
 const Column = require(path.join(__dirname, '/src/column'));
 
@@ -16,7 +16,8 @@ module.exports = function(client) {
             model.columns.forEach(el => {
                 columns[el] = new Column(el);
             });
-            return {
+
+            const obj = {
                 col: function(name) {
                     if(columns[name] === undefined)
                         return new Error('This column does not exist');
@@ -37,8 +38,19 @@ module.exports = function(client) {
                 },
 
                 //Clauses
-                where: where
-            }
+                where,
+                limit,
+                withClient: function(_client) {
+                    client = _client;
+                    return this;
+                }
+            };
+
+            Object.keys(columns).forEach(key => {
+                obj[key] = columns[key];
+            });
+
+            return obj;
         }
     }
 }

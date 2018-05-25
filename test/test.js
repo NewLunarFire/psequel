@@ -128,5 +128,15 @@ describe('Clauses', () => {
             expect(fakeClient.query).to.have.been.calledOnce;
             expect(fakeClient.query).to.have.been.calledWith("SELECT * FROM test WHERE name = 'Jo'");
         });
+    });
+    describe('#limit()', () => {
+        it('should add limit clause if provided with one', async () => {
+            const fakeClient = createFakeClient();
+            const testTable = psequel(fakeClient).Model(testModel);
+            await testTable.limit(1).select();
+
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("SELECT * FROM test LIMIT 1");
+        });
     });  
 });
