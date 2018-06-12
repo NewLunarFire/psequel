@@ -2,7 +2,7 @@
 
 This is still a very early demo and is not properly secured against threats like SQL Injections. Beware!!!
 
-# PSequel: A model Postgres framework to enable easier sql-json interoperability
+# PSequel: A query facilitator for Postgres
 
 PSequel aims to become a framework that will make bridging nodejs code and postgreSQL queries easier. It will do so by avoiding direct use of SQL queries to fetch and update data and offer methods that will use objects and do run-time validation on data to ensure quality.
 

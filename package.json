@@ -1,7 +1,7 @@
 {
   "name": "psequel",
   "version": "0.2.0",
-  "description": "A model Postgres framework to enable easier sql-json interoperability",
+  "description": "A query facilitator for Postgres",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
