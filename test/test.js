@@ -131,12 +131,20 @@ describe('Clauses', () => {
             const fakeClient = createFakeClient();
             const testTable = psequel(fakeClient).Model(testModel);
             await testTable.where(
-                testTable.columns['name'].equalsValue('Jo')
+                testTable.columns['name'].equals('Jo')
             ).select();
 
             expect(fakeClient.query).to.have.been.calledOnce;
             expect(fakeClient.query).to.have.been.calledWith("SELECT * FROM test WHERE name = 'Jo'");
         });
+        it('should support lessThan as > operator', async() => {
+            const fakeClient = createFakeClient();
+            const testTable = psequel(fakeClient).Model(testModel);
+            await testTable.where(testTable.value.lessThan(5)).delete();
+
+            expect(fakeClient.query).to.have.been.calledOnce;
+            expect(fakeClient.query).to.have.been.calledWith("DELETE FROM test WHERE value < 5");
+        })
     });
     describe('#limit()', () => {
         it('should add limit clause if provided with one', async () => {

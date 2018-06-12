@@ -1,5 +1,6 @@
 const path = require('path');
 const helper = require(path.join(__dirname, '..', 'helper'));
+const parseWhere = require('../parser/where');
 
 function getColumnSelector(columns, model) {
     if(columns.length === 0) {
@@ -33,33 +34,17 @@ function getColumnSelector(columns, model) {
     throw new Error('Invalid column selector');
 }
 
-function parseWhereClause(clause) {
-    var clauseText;
-    switch(clause.op) {
-        case 'eq':
-            clauseText = clause.column + ' = ';
-            if(isNaN(clause.value))
-                clauseText += '\'' + clause.value + '\'';
-            else
-                clauseText += clause.value;
-            break;
-        default:
-            throw new Error('Invalid where clause');
-    }
-
-    return clauseText;
-}
-
 module.exports = async function (client, model, columns) {
     var queryString = 'SELECT ' + getColumnSelector(columns, model) + ' FROM ' + model.table;
 
     if(this.clauses) {
         if(this.clauses.where)
-            queryString += ' WHERE ' + parseWhereClause(this.clauses.where);
+            queryString += ' WHERE ' + parseWhere(this.clauses.where);
         if(this.clauses.limit)
             queryString += ' LIMIT ' + this.clauses.limit;
     }
     
+    console.log(queryString)
     const result = await client.query(queryString);
     return result.rows;
 }

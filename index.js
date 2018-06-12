@@ -3,6 +3,8 @@ const path = require('path');
 //Commands
 const select = require(path.join(__dirname, '/src/commands/select'));
 const insert = require(path.join(__dirname, '/src/commands/insert'));
+const del = require(path.join(__dirname, '/src/commands/delete'));
+
 // Clauses
 const where = require(path.join(__dirname, '/src/clauses/where'));
 const limit = require(path.join(__dirname, '/src/clauses/limit'));
@@ -35,6 +37,10 @@ module.exports = function(client) {
 
                 select: async function() {
                     return await select.bind(this)(client, model, arguments)
+                },
+
+                delete: async function() {
+                    return await del.bind(this)(client, model, arguments);
                 },
 
                 selectOne: async function() {

@@ -22,6 +22,7 @@ module.exports = async function (client, model, args) {
         + ' VALUES(' + Object.keys(item).map((key) => item[key]).map(sanitize).join(', ') + ')'
         + ' RETURNING *';
     
+    console.log(queryString)
     const result = await client.query(queryString);
     return result.rows;
 }
