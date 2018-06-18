@@ -1,7 +1,7 @@
-module.exports = function (clause) {
+module.exports = function(clause) {
     const clauses = (this.clauses === null || this.clauses === undefined)
-        ? {'where' : clause}
-        : Object.assign({}, this.clauses, {'where' : clause});
+        ? {'join' : clause}
+        : Object.assign({}, this.clauses, {'join' : clause});
 
     return Object.assign({}, this, {'clauses': clauses});
 }

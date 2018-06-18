@@ -38,6 +38,12 @@ module.exports = async function (client, model, columns) {
     var queryString = 'SELECT ' + getColumnSelector(columns, model) + ' FROM ' + model.table;
 
     if(this.clauses) {
+        if(this.clauses.join) {
+            const join = this.clauses.join;
+            const colA = model.table + '.' + join.local;
+            const colB = join.table + '.' + join.foreign;
+            queryString += ' JOIN ' + join.table + ' ON ' + colA + ' = ' + colB;
+        }
         if(this.clauses.where)
             queryString += ' WHERE ' + parseWhere(this.clauses.where);
         if(this.clauses.limit)

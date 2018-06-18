@@ -8,6 +8,7 @@ const del = require(path.join(__dirname, '/src/commands/delete'));
 // Clauses
 const where = require(path.join(__dirname, '/src/clauses/where'));
 const limit = require(path.join(__dirname, '/src/clauses/limit'));
+const join = require(path.join(__dirname, '/src/clauses/join'));
 
 const Column = require(path.join(__dirname, '/src/column'));
 
@@ -51,6 +52,8 @@ module.exports = function(client) {
                 //Clauses
                 where,
                 limit,
+                join,
+
                 withClient: function(_client) {
                     client = _client;
                     return this;
