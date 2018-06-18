@@ -1,6 +1,6 @@
 const parseWhere = require('../parser/where');
 
-module.exports = async function (client, model, columns) {
+module.exports = async function (client, model) {
     var queryString = 'DELETE FROM ' + model.table;
 
     if(this.clauses) {

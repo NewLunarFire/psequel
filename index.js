@@ -41,7 +41,7 @@ module.exports = function(client) {
                 },
 
                 delete: async function() {
-                    return await del.bind(this)(client, model, arguments);
+                    return await del.bind(this)(client, model);
                 },
 
                 selectOne: async function() {
