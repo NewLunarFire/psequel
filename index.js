@@ -4,6 +4,7 @@ const path = require('path');
 const select = require(path.join(__dirname, '/src/commands/select'));
 const insert = require(path.join(__dirname, '/src/commands/insert'));
 const del = require(path.join(__dirname, '/src/commands/delete'));
+const update = require(path.join(__dirname, '/src/commands/update'));
 
 // Clauses
 const where = require(path.join(__dirname, '/src/clauses/where'));
@@ -12,8 +13,14 @@ const join = require(path.join(__dirname, '/src/clauses/join'));
 
 const Column = require(path.join(__dirname, '/src/column'));
 
-module.exports = function(client) {
+const defaultOptions = {
+    debug: false
+}
+
+module.exports = function(_options) {
+    const options = Object.assign({}, defaultOptions, _options);
     return {
+        options,
         Model: function(model) {
             var columns = {};
             model.columns.forEach(el => {
@@ -40,6 +47,10 @@ module.exports = function(client) {
                     return await select.bind(this)(client, model, arguments)
                 },
 
+                update: async function(values) {
+                    return await update.bind(this)(client, model, values)
+                },
+
                 delete: async function() {
                     return await del.bind(this)(client, model);
                 },
@@ -54,6 +65,7 @@ module.exports = function(client) {
                 limit,
                 join,
 
+                options,
                 withClient: function(_client) {
                     client = _client;
                     return this;

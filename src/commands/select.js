@@ -1,6 +1,7 @@
 const path = require('path');
 const helper = require(path.join(__dirname, '..', 'helper'));
-const parseWhere = require('../parser/where');
+const parseWhere = require(path.join(__dirname, '..', 'parser', 'where'));
+const query = require(path.join(__dirname, '..', 'query'));
 
 function getColumnSelector(columns, model) {
     if(columns.length === 0) {
@@ -50,7 +51,5 @@ module.exports = async function (client, model, columns) {
             queryString += ' LIMIT ' + this.clauses.limit;
     }
     
-    console.log(queryString)
-    const result = await client.query(queryString);
-    return result.rows;
+    return await(query(client, this.options, queryString)).rows;
 }

@@ -1,25 +1,24 @@
-function equalsValue(columnName) {
-    return function(value) {
-        return {
-            'column': columnName,
-            'op': 'eq',
-            'value': value
-        }
-    }
-}
-
-function lessThan(columnName) {
-    return function(value) {
-        return {
-            'column': columnName,
-            'op': 'lt',
-            'value': value
-        } 
-    }
-}
-
 const operators = [
-    ['equals', 'eq'], ['lessThan', 'lt'], ['greaterThan', 'gt'], ['lessThanEqual', 'lte'], ['greaterThanEqual', 'gte']
+    {
+        name: 'equals',
+        symbol: '='
+    },
+    {
+        name: 'lessThan',
+        symbol: '<'
+    },
+    {
+        name: 'greaterThan',
+        symbol: '>'
+    },
+    {
+        name: 'lessThanEqual',
+        symbol: '<='
+    },
+    {
+        name: 'greaterThanEqual',
+        symbol: '>='
+    }
 ]
 
 module.exports = function(columnName) {
@@ -27,10 +26,10 @@ module.exports = function(columnName) {
 
     const that = this;
     operators.forEach((operator) => {
-        that[operator[0]] = function(value) {
+        that[operator.name] = function(value) {
             return {
                 'column': columnName,
-                'op': operator[1],
+                'op': operator.symbol,
                 'value': value
             }
         }
