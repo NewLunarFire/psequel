@@ -4,7 +4,19 @@ const parseJoin = require(path.join(__dirname, '..', 'parser', 'join'));
 const parseWhere = require(path.join(__dirname, '..', 'parser', 'where'));
 const query = require(path.join(__dirname, '..', 'query'));
 
-const escapeColumnName = (name) => name.split('.').map(helper.addDoubleQuotes).join('.');
+function escapeColumnName(col) {
+    var alias = null;
+    var name = col;
+
+    if(col.includes(' => ')) {
+        const split = col.split(' => ');
+        name = split[0];
+        alias = split[1];
+    }
+
+    return name.split('.').map(helper.addDoubleQuotes).join('.')
+        + (alias !== null ? " AS " + helper.addDoubleQuotes(alias) : "");
+}
 
 function getColumnSelector(columns, model) {
     if(columns.length === 0) {
