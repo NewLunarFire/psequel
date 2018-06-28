@@ -21,14 +21,15 @@ const operators = [
     }
 ]
 
-module.exports = function(columnName) {
-    this.name = columnName;
+module.exports = function(name, table) {
+    this.name = name;
+    this.table = table;
 
     const that = this;
     operators.forEach((operator) => {
         that[operator.name] = function(value) {
             return {
-                'column': columnName,
+                'column': name,
                 'op': operator.symbol,
                 'value': value
             }

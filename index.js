@@ -24,7 +24,7 @@ module.exports = function(_options) {
         Model: function(model) {
             var columns = {};
             model.columns.forEach(el => {
-                columns[el] = new Column(el);
+                columns[el] = new Column(el, model.table);
             });
 
             const obj = {
@@ -63,7 +63,9 @@ module.exports = function(_options) {
                 //Clauses
                 where,
                 limit,
-                join,
+                join: function(left, right) {
+                    return join.bind(this)(left, right)
+                },
 
                 options,
                 withClient: function(_client) {
