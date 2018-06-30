@@ -21,7 +21,12 @@ const operators = [
     }
 ]
 
+function as(alias) {
+    
+}
+
 module.exports = function(name, table) {
+    this.as = (alias) => `${this.table}.${this.name} => ${alias}`
     this.name = name;
     this.table = table;
 
